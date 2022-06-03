@@ -15,7 +15,7 @@ Android In App Push Provisioning Sample
 Google Pay In App Provisioning is the way to provision your Cards to Google Pay Wallet.
 
 ## Getting started
-Configure VGSCollect Sample :
+
 - Clone repository
 ```groovy
 git clone git@github.com:solidfi/android-iap.git
