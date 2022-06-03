@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">CardPushProvision</string>
+    <string name="add_to_googlepay_button_content_description">Add to Google Pay</string>
+</resources>
