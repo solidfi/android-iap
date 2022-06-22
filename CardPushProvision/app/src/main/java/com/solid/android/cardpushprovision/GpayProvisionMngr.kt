@@ -14,13 +14,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tapandpay.TapAndPay
 import com.google.android.gms.tapandpay.TapAndPayClient
 import com.google.android.gms.tapandpay.TapAndPayStatusCodes
+import com.google.android.gms.tapandpay.issuer.IsTokenizedRequest
 import com.google.android.gms.tapandpay.issuer.PushTokenizeRequest
 import com.google.android.gms.tapandpay.issuer.UserAddress
-import com.solid.android.cardpushprovision.data.CardResponse
+import com.google.android.gms.tasks.Task
 
+const val REQUEST_CODE_PUSH_TOKENIZE: Int = 3
 class GpayProvisionMngr constructor( private val activity: AppCompatActivity){
 
-    private val REQUEST_CODE_PUSH_TOKENIZE: Int = 3
     private var tapAndPayClient: TapAndPayClient = TapAndPay.getClient(activity)
     private var walletId: String? = null
     private var stableHardwareId: String? = null
@@ -41,58 +42,70 @@ class GpayProvisionMngr constructor( private val activity: AppCompatActivity){
         }
     }
 
+    /**
+     * check the Gpay environment - Production or sandbox
+     */
     fun checkforGpayEnvironment(){
         tapAndPayClient?.environment?.addOnCompleteListener{
             if(it.isSuccessful){
-               Toast.makeText(activity,"Gpay-Env - ".plus(it.result),Toast.LENGTH_LONG).show()
+                Toast.makeText(activity,"Gpay-Env - ".plus(it.result),Toast.LENGTH_LONG).show()
             }
         }
     }
 
     /**
      * Check the card is already added to Gpay ,
-     * Provide the last 4 digit of the card number and callback method which will repond with true or false
+     * Provide the last 4 digit of the card number and callback method which will respond with true or false
      */
-    fun shouldEnableAddToWalletButton(cardLast4 :String,callBack: (showAddButton: Boolean) -> Unit){
-        tapAndPayClient?.listTokens()?.addOnCompleteListener{ task ->
-            if (task.isSuccessful) {
-                var alreadyAdded = false
-                task.result?.forEach { tokeninfo ->
-                    if(cardLast4.equals(tokeninfo.fpanLastFour?.trim())){
-                        alreadyAdded = true
-                        return@forEach
-                    }
-                }//end
-                callBack(alreadyAdded)
+    fun shouldEnableAddToWalletButton(cardLast4 :String,callBack: (showAddButton: Boolean?) -> Unit){
+        val request = IsTokenizedRequest.Builder()
+            .setIdentifier(cardLast4)
+            .setNetwork(TapAndPay.CARD_NETWORK_VISA)
+            .setTokenServiceProvider(TapAndPay.TOKEN_PROVIDER_VISA)
+            .build()
+        tapAndPayClient.isTokenized(request)
+            .addOnCompleteListener { task: Task<Boolean?> ->
+                if (task.isSuccessful) {
+                    callBack(task.result)
+                    //Handle the visibility of button with task.getResult();
+                }
             }
-        }
     }
 
     /**
      * Provide the OPC bytes reciced from server and Card Details object
      * This method will initiate Card provisioning call to Gpay via TAP and PAY library
      */
-    fun handleAddToGooglePayClick(opaquePaymentCard: String,cardResponse: CardResponse) {
+    fun handleAddToGooglePayClick(opaquePaymentCard: String,
+                                  cardHolderName :String,
+                                  addressline1 :String,
+                                  city :String,
+                                  state:String,
+                                  country:String,
+                                  postalcode:String,
+                                  mobileNumb:String,
+                                  cardLabel:String,
+                                  cardLast4:String) {
         val opcBytes: ByteArray = opaquePaymentCard?.toByteArray()!!
 
-        val userAddress: UserAddress = UserAddress.newBuilder()
-            .setName(cardResponse?.cardholder?.name!!)
-            .setAddress1(cardResponse?.cardholder?.billingAddress?.line1!!)
-            .setLocality(cardResponse?.cardholder?.billingAddress?.city!!)
-            .setAdministrativeArea(cardResponse?.cardholder?.billingAddress?.state!!)
-            .setCountryCode(cardResponse?.cardholder?.billingAddress?.country!!)
-            .setPostalCode(cardResponse?.cardholder?.billingAddress?.postalCode!!)
-            .setPhoneNumber(cardResponse.mobile!!)
+        val userAddress = UserAddress.newBuilder()
+            .setName(cardHolderName)
+            .setAddress1(addressline1)
+            .setLocality(city)
+            .setAdministrativeArea(state)
+            .setCountryCode(country)
+            .setPostalCode(postalcode)
+            .setPhoneNumber(mobileNumb)
             .build()
 
         val pushTokenizeRequest: PushTokenizeRequest = PushTokenizeRequest.Builder()
             .setOpaquePaymentCard(opcBytes)
             .setNetwork(TapAndPay.CARD_NETWORK_VISA)
             .setTokenServiceProvider(TapAndPay.TOKEN_PROVIDER_VISA)
-            .setDisplayName(cardResponse?.label!!)
-            .setLastDigits(cardResponse?.last4!!)
+            .setDisplayName(cardLabel)
+            .setLastDigits(cardLast4)
             .setUserAddress(userAddress)
-            .build()
+            .build();
 
         tapAndPayClient?.pushTokenize(activity, pushTokenizeRequest, REQUEST_CODE_PUSH_TOKENIZE)
     }
