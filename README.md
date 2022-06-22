@@ -38,19 +38,22 @@ git clone https://github.com/solidfi/android-iap.git
 
 
 ## Working With Sample
+- Easy to import the project to android studio to Run the sample
+- Open GpayProvisionMngr.kt file includes Push provisioning API required for the Android client.
+- Refer MainActivity.kt file for the Usage of GpayProvisionMngr Class
+
+- If you facing issues on gradle sync or compilation, please follow below steps
 - Open settings.gradle file from the cloned repo
-- Update the maven file path of Google Tap and pay lib 
- ```maven { url "file:/UR_REPO_PATH/android-iap/CardPushProvision/m2repository/" }```
- latest Libray can be download from https://developers.google.com/pay/issuers/apis/push-provisioning/android/setup
- follow the steps described in developer docs 
- - Open GpayProvisionMngr.kt file includes Push provisioning API required for the Android client.
- - Refer MainActivity.kt file for the Usage of GpayProvisionMngr Class
+- Update the maven file path of Google Tap and pay lib
+  ``` maven { url "file:$rootDir/../CardPushProvision/m2repository" }```
+  latest Libray can be download from https://developers.google.com/pay/issuers/apis/push-provisioning/android/setup
+  follow the steps described in developer docs
 
 ## Tooling
 - Android 5.0 +
-- Android Studio Chipmunk | 2021.2.1
+- Android Studio Chipmunk | 2021.2.1 Patch 1
 - Kotlin 1.6.21
+- Compile android SDK - API 31
 
 ## Solid Dev Center
 - [Solid Dev Center](https://www.solidfi.com/docs/introduction)
-
