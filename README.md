@@ -4,10 +4,10 @@ Android In App Push Provisioning Sample
 ## Table of contents
 - [Overview](#overview)
 - [Getting started](#getting-started)
-- [Get Access to Android Push Provisioning API](#get-access-to-android-push-provisioning-api)
+- [Prerequisite](#prerequisite)
 - [Working With Sample](#working-with-sample)
 - [Tooling](#tooling)
-- [ Solid API Reference](#solid-api-reference)
+- [ Solid Dev center](#solid-dev-center)
 
 
 
@@ -25,7 +25,9 @@ git clone https://github.com/solidfi/android-iap.git
 - Open it in [Android Studio](https://developer.android.com/studio)
 - Run the project and test it out.
 
-## Get Access to Android Push Provisioning API
+## Prerequisite
+
+### Get Access to Android Push Provisioning API from Google
 
 - To get started with Google Pay push provisioning, submit this request form: https://support.google.com/faqs/contact/pp_api_allowlist?authuser=1
 - Application Package name and SHA-256 certificate fingerprint used for Application Signature should be added to Google allow lis, while submit the  Request form please provide these informations.
@@ -41,7 +43,7 @@ git clone https://github.com/solidfi/android-iap.git
  ```maven { url "file:/UR_REPO_PATH/android-iap/CardPushProvision/m2repository/" }```
  latest Libray can be download from https://developers.google.com/pay/issuers/apis/push-provisioning/android/setup
  follow the steps described in developer docs 
- - Open GpayProvisionMngr.kt file , this has all Push provioning API used for android client
+ - Open GpayProvisionMngr.kt file includes Push provisioning API required for the Android client.
  - Refer MainActivity.kt file for the Usage of GpayProvisionMngr Class
 
 ## Tooling
@@ -49,6 +51,6 @@ git clone https://github.com/solidfi/android-iap.git
 - Android Studio Chipmunk | 2021.2.1
 - Kotlin 1.6.21
 
-## Solid API Reference
-- Solid API Integration : https://documenter.getpostman.com/view/13543869/TWDfEDwX#ce8c0e57-0dcf-45ea-87d8-6f03a302e027
+## Solid Dev Center
+- [Solid Dev Center](https://www.solidfi.com/docs/introduction)
 
