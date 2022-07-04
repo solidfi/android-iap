@@ -27,7 +27,7 @@ git clone https://github.com/solidfi/android-iap.git
 
 ## Prerequisite
 
-### Get Access to Android Push Provisioning API from Google
+### To get started, complete the steps as mentioed in : [Google Pay Entitlements](https://help.solidfi.com/hc/en-us/articles/6343456222875) 
 
 - To get started with Google Pay push provisioning, submit this request form: https://support.google.com/faqs/contact/pp_api_allowlist?authuser=1
 - Application Package name and SHA-256 certificate fingerprint used for Application Signature should be added to Google allow lis, while submit the  Request form please provide these informations.
