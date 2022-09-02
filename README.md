@@ -6,7 +6,7 @@ Android In App Push Provisioning Sample
 - [Getting started](#getting-started)
 - [Prerequisite](#prerequisite)
 - [Working With Sample](#working-with-sample)
-- [API details for running the Sample](#API details for running the Sample)
+- [API details for running the Sample](#api details for running the Sample)
 - [Tooling](#tooling)
 - [ Solid Dev center](#solid-dev-center)
 
