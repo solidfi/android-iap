@@ -23,13 +23,13 @@ const val REQUEST_CODE_PUSH_TOKENIZE: Int = 3
 class GpayProvisionMngr constructor( private val activity: AppCompatActivity){
 
     private var tapAndPayClient: TapAndPayClient = TapAndPay.getClient(activity)
-    private var walletId: String? = null
-    private var stableHardwareId: String? = null
+    private var clientCustomerId: String? = null
+    private var deviceId: String? = null
 
     init {
-        tapAndPayClient?.activeWalletId?.addOnCompleteListener {
+        TapAndPay.getClient(activity)?.activeWalletId?.addOnCompleteListener {
             if (it.isSuccessful) {
-                walletId = it.result
+                clientCustomerId = it.result
             } else {
                 val error = it.exception?.localizedMessage
                 Toast.makeText(activity,"Unable to get google pay wallet id.".plus("  ").plus(error),Toast.LENGTH_LONG).show()
@@ -37,7 +37,7 @@ class GpayProvisionMngr constructor( private val activity: AppCompatActivity){
         }
         tapAndPayClient?.stableHardwareId?.addOnCompleteListener{
             if (it.isSuccessful) {
-                stableHardwareId = it.result
+                deviceId = it.result
             }
         }
     }

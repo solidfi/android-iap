@@ -6,6 +6,7 @@ Android In App Push Provisioning Sample
 - [Getting started](#getting-started)
 - [Prerequisite](#prerequisite)
 - [Working With Sample](#working-with-sample)
+- [API details for running the Sample](#API details for running the Sample)
 - [Tooling](#tooling)
 - [ Solid Dev center](#solid-dev-center)
 
@@ -46,6 +47,28 @@ git clone https://github.com/solidfi/android-iap.git
   ``` maven { url "file:$rootDir/../CardPushProvision/m2repository" }```
   latest Libray can be download from https://developers.google.com/pay/issuers/apis/push-provisioning/android/setup
   follow the steps described in developer docs
+
+## API details for running the Sample
+This sample only describes how to communicate with GooglePay Sdk Api for push Provisioning,
+So implementation team has to take care of the following back end api implementations
+
+According to google pay documentation, we need to have the following fields to invoke provision API call to GPay
+```
+val pushTokenizeRequest: PushTokenizeRequest = PushTokenizeRequest.Builder()
+   .setOpaquePaymentCard(opcBytes)
+   .setNetwork(TapAndPay.CARD_NETWORK_VISA)
+    .setTokenServiceProvider(TapAndPay.TOKEN_PROVIDER_VISA)
+    .setDisplayName(cardLabel)
+   .setLastDigits(cardLast4)
+    .setUserAddress(userAddress)
+   .build();
+```
+- Call Card Api from solid platform to get Card information.
+- Call /provision Api available in Solid platform to get `opcBytes(opaquePaymentCard)`
+- /provision api required `clientCustomerId and deviceId ` as input parameters, these argument values already available inside the sample repo ,
+  file named `GpayProvisionMngr.kt`
+- Response received from provision api  from solid platform use the value `opaquePaymentCard` as input to above `PushTokenizeRequest` 
+ 
 
 ## Tooling
 - Android 5.0 +
