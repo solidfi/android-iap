@@ -6,7 +6,7 @@ Android In App Push Provisioning Sample
 - [Getting started](#getting-started)
 - [Prerequisite](#prerequisite)
 - [Working With Sample](#working-with-sample)
-- [API details for running the Sample](#api details for running the Sample)
+- [API details for running the sample](#api-details-for-running-the-sample)
 - [Tooling](#tooling)
 - [ Solid Dev center](#solid-dev-center)
 
@@ -48,7 +48,7 @@ git clone https://github.com/solidfi/android-iap.git
   latest Libray can be download from https://developers.google.com/pay/issuers/apis/push-provisioning/android/setup
   follow the steps described in developer docs
 
-## API details for running the Sample
+## API details for running the sample
 This sample only describes how to communicate with GooglePay Sdk Api for push Provisioning,
 So implementation team has to take care of the following back end api implementations
 
