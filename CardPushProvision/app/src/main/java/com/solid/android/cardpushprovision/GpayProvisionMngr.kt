@@ -19,12 +19,15 @@ import com.google.android.gms.tapandpay.issuer.PushTokenizeRequest
 import com.google.android.gms.tapandpay.issuer.UserAddress
 import com.google.android.gms.tasks.Task
 
+private const val ISSUERNAME = "Solid App"
 const val REQUEST_CODE_PUSH_TOKENIZE: Int = 3
 class GpayProvisionMngr constructor( private val activity: AppCompatActivity){
 
     private var tapAndPayClient: TapAndPayClient = TapAndPay.getClient(activity)
     private var clientCustomerId: String? = null
     private var deviceId: String? = null
+    private var cardNeedVerification = false
+    private var cardTokenReferenceId = ""
 
     init {
         TapAndPay.getClient(activity)?.activeWalletId?.addOnCompleteListener {
@@ -53,6 +56,9 @@ class GpayProvisionMngr constructor( private val activity: AppCompatActivity){
         }
     }
 
+    fun isCardProvisionStarted():Boolean{
+        return cardNeedVerification
+    }
     /**
      * Check the card is already added to Gpay ,
      * Provide the last 4 digit of the card number and callback method which will respond with true or false
@@ -67,10 +73,28 @@ class GpayProvisionMngr constructor( private val activity: AppCompatActivity){
             .addOnCompleteListener { task: Task<Boolean?> ->
                 if (task.isSuccessful) {
                     callBack(task.result)
+                    checkTokenStatus(cardLast4,callBack)
                     //Handle the visibility of button with task.getResult();
                 }
             }
     }
+
+    private fun checkTokenStatus(lastFour :String,callBack: (showAddButton: Boolean?) -> Unit){
+        tapAndPayClient?.listTokens()?.addOnCompleteListener{ task ->
+            if (task.isSuccessful) {
+                for (token in task.result) {
+                    if (token.fpanLastFour.equals(lastFour, true) && ISSUERNAME.equals(token.issuerName, true)) {
+                        cardNeedVerification = (token.tokenState == TapAndPay.TOKEN_STATE_NEEDS_IDENTITY_VERIFICATION)
+                        cardTokenReferenceId = token.issuerTokenId
+                        callBack(cardNeedVerification)
+                    }
+                }
+            }else{
+                Toast.makeText(activity,activity.getString(R.string.gpay_token_status),Toast.LENGTH_LONG).show()
+            }
+        }
+    }//End
+
 
     /**
      * Provide the OPC bytes reciced from server and Card Details object
@@ -86,6 +110,7 @@ class GpayProvisionMngr constructor( private val activity: AppCompatActivity){
                                   mobileNumb:String,
                                   cardLabel:String,
                                   cardLast4:String) {
+
         val opcBytes: ByteArray = opaquePaymentCard?.toByteArray()!!
 
         val userAddress = UserAddress.newBuilder()
@@ -108,6 +133,13 @@ class GpayProvisionMngr constructor( private val activity: AppCompatActivity){
             .build();
 
         tapAndPayClient?.pushTokenize(activity, pushTokenizeRequest, REQUEST_CODE_PUSH_TOKENIZE)
+    }
+
+    fun resumeCardPushProvisioning(cardLabel:String,){
+        tapAndPayClient?.tokenize(
+            activity, cardTokenReferenceId, TapAndPay.TOKEN_PROVIDER_VISA,
+            cardLabel, TapAndPay.CARD_NETWORK_VISA, REQUEST_CODE_PUSH_TOKENIZE
+        )
     }
 
     /**

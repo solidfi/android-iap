@@ -36,16 +36,21 @@ class MainActivity : AppCompatActivity(),View.OnClickListener {
     }
 
     override fun onClick(p0: View?) {
-        gpayProvisionMngr.handleAddToGooglePayClick(
-            "OPC-SRINIG-FROM-SOLID-BACK-END", //Provide the OPC bytes received from Solid server api call
-            "cardHolderName" ,//Provide real card holder name
-            "addressline1" ,// Adress line of billing adress
-            "city" ,//Provide city of billing adress
-            "state",//Provide state of billing adress
-            "country",//Provide country of billing adress
-            "postalcode",//Provide postal code of billing adress
-            "mobileNumb",//Provide mobile number of card holder
-            "cardLabel",//Provide real card label
-            "cardLast4")//Provide real card last 4 digit
+        if (gpayProvisionMngr.isCardProvisionStarted()) {
+            gpayProvisionMngr.resumeCardPushProvisioning("cardLabel")//Provide real card label)
+        } else {
+            gpayProvisionMngr.handleAddToGooglePayClick(
+                "OPC-SRINIG-FROM-SOLID-BACK-END", //Provide the OPC bytes received from Solid server api call
+                "cardHolderName",//Provide real card holder name
+                "addressline1",// Adress line of billing adress
+                "city",//Provide city of billing adress
+                "state",//Provide state of billing adress
+                "country",//Provide country of billing adress
+                "postalcode",//Provide postal code of billing adress
+                "mobileNumb",//Provide mobile number of card holder
+                "cardLabel",//Provide real card label
+                "cardLast4"
+            )//Provide real card last 4 digit
+        }
     }
 }
